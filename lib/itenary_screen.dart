@@ -4,6 +4,8 @@ import 'package:travller/itenary_display_screen.dart';
 import 'dart:convert';
 
 class ItineraryScreen extends StatefulWidget {
+  const ItineraryScreen({super.key});
+
   @override
   _ItineraryScreenState createState() => _ItineraryScreenState();
 }
@@ -56,12 +58,19 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Error"),
-          content: Text("Failed to generate itinerary. Please try again."),
+          backgroundColor: Colors.purple,
+          title: const Text("Error",
+              style:
+                  TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
+          content: const Text("Failed to generate itinerary. Please try again.",
+              style:
+                  TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("OK"),
+              child: const Text("OK",
+                  style: TextStyle(
+                      color: Colors.white, fontStyle: FontStyle.italic)),
             ),
           ],
         ),
@@ -71,37 +80,87 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Itinerary Generator")),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(), // Show loader
-              )
-            else
-              Column(
-                children: [
-                  TextField(
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.purple.withOpacity(0.1),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.purple, width: 2.0),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.purple, width: 2.5),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          labelStyle:
+              TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+        ),
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Itinerary Generator",
+              style: TextStyle(fontStyle: FontStyle.italic)),
+          backgroundColor: Colors.purple,
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          color: Colors.deepPurple[900],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_isLoading)
+                const Center(
+                  child: CircularProgressIndicator(
+                      color: Colors.white), // Show loader
+                )
+              else
+                Column(
+                  children: [
+                    TextField(
                       controller: _destinationController,
-                      decoration: InputDecoration(labelText: "Destination")),
-                  TextField(
+                      decoration:
+                          const InputDecoration(labelText: "Destination"),
+                      style: TextStyle(
+                          color: Colors.white, fontStyle: FontStyle.italic),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
                       controller: _durationController,
                       decoration:
-                          InputDecoration(labelText: "Duration (days)")),
-                  TextField(
+                          const InputDecoration(labelText: "Duration (days)"),
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                          color: Colors.white, fontStyle: FontStyle.italic),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
                       controller: _interestsController,
-                      decoration: InputDecoration(
-                          labelText: "Interests (e.g., beaches, adventure)")),
-                  SizedBox(height: 10),
-                  ElevatedButton(
+                      decoration: const InputDecoration(
+                          labelText: "Interests (e.g., beaches, adventure)"),
+                      style: TextStyle(
+                          color: Colors.white, fontStyle: FontStyle.italic),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
                       onPressed: generatePlan,
-                      child: Text("Generate Itinerary")),
-                ],
-              ),
-          ],
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      child: const Text("Generate Itinerary",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontStyle: FontStyle.italic)),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );

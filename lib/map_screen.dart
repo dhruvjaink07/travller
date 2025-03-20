@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
   final List<LatLng> coordinates;
   final List<Map<String, dynamic>> details; // Additional details for markers
 
-  MapScreen({required this.coordinates, required this.details});
+  const MapScreen(
+      {super.key, required this.coordinates, required this.details});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -50,13 +50,13 @@ class _MapScreenState extends State<MapScreen> {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text("Close"),
+                      child: const Text("Close"),
                     ),
                   ],
                 ),
               );
             },
-            child: Icon(Icons.location_on, color: Colors.red, size: 40),
+            child: const Icon(Icons.location_on, color: Colors.red, size: 40),
           ),
         );
       });
@@ -80,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
                 TileLayer(
                   urlTemplate:
                       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c'],
+                  subdomains: const ['a', 'b', 'c'],
                   tileProvider:
                       NetworkTileProvider(), // Use the default network tile provider
                 ),
@@ -93,9 +93,10 @@ class _MapScreenState extends State<MapScreen> {
               itemCount: widget.details.length,
               itemBuilder: (context, index) {
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: ListTile(
-                    leading: Icon(Icons.place, color: Colors.blue),
+                    leading: const Icon(Icons.place, color: Colors.blue),
                     title: Text(widget.details[index]['title']),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

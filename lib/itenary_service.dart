@@ -4,7 +4,7 @@ Future<String> generateItinerary(
     String destination, String duration, String interests) async {
   final model = GenerativeModel(
       model: 'gemini-2.0-flash',
-      apiKey: 'API KEY');
+      apiKey: 'AIzaSyBtm3E-gTw4nrc9V1VFjpu1oXVSSdnJfYg');
   String prompt = """
   You are a travel itinerary planner.
   Generate a structured **$duration-day travel itinerary** for a $destination.
