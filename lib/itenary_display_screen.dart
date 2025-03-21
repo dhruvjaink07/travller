@@ -140,11 +140,11 @@ class ItineraryDisplayScreen extends StatelessWidget {
                                             color: Colors.purple)),
                                     Text(
                                       "Coordinates: (${event['coordinates']['lat']}, ${event['coordinates']['long']})",
-                                      style: TextStyle(color: Colors.grey[400]),
+                                      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
                                     ),
                                     Text(
                                       "Description: ${event['description']}",
-                                      style: TextStyle(color: Colors.grey[400]),
+                                      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
                                     ),
                                     const Divider(),
                                   ],
