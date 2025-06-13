@@ -2,7 +2,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intl/intl.dart';
 
 Future<String> generateItinerary(
-    String destination, String duration, String interests,
+    String source, String destination, String duration, String interests,
     {required int numberOfPeople,
     required String currency,
     DateTime? startDate,
@@ -17,13 +17,14 @@ Future<String> generateItinerary(
 
   String prompt = """
   You are a travel itinerary planner.
-  Generate a structured **$duration-day travel itinerary** for $destination for $numberOfPeople people.
+  Generate a structured **$duration-day travel itinerary** for travel from $source to $destination for $numberOfPeople people.
   The budget should be prepared in $currency.
   The response should be in **JSON format only**, without any extra text.
 
   Here's the required format:
 
   {
+    "source": "City Name",
     "destination": "City Name",
     "duration": "X days",
     "start_date": "YYYY-MM-DD",
@@ -67,7 +68,7 @@ Future<String> generateItinerary(
     ]
   }
 
-  Now, generate an itinerary for **$destination for $duration days starting from ${DateFormat('yyyy-MM-dd').format(actualStartDate)} to ${DateFormat('yyyy-MM-dd').format(actualEndDate)} for $numberOfPeople people. Include live image URLs for each event location to help visualize the places. Ensure the image URLs are valid and accessible. Also, include the total budget, transportation details, and accommodation suggestions in $currency.**
+  Now, generate an itinerary for travel from **$source to $destination for $duration days starting from ${DateFormat('yyyy-MM-dd').format(actualStartDate)} to ${DateFormat('yyyy-MM-dd').format(actualEndDate)} for $numberOfPeople people. Include live image URLs for each event location to help visualize the places. Ensure the image URLs are valid and accessible. Also, include the total budget, transportation details, and accommodation suggestions in $currency.**
   """;
 
   final content = [Content.text(prompt)];

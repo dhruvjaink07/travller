@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'map_screen.dart';
-import 'package:travller/theme/app_colors.dart'; // Import the color palette
+import '../../map/screens/map_screen.dart';
+import 'package:travller/app/theme/app_colors.dart'; // Import the color palette
 
 class ItineraryDisplayScreen extends StatelessWidget {
   final Map<String, dynamic> itinerary;

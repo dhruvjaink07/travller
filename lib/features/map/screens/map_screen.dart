@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:travller/theme/app_colors.dart'; // Import the color palette
+import 'package:travller/app/theme/app_colors.dart'; // Import the color palette
 
 class MapScreen extends StatefulWidget {
   final List<LatLng> coordinates;

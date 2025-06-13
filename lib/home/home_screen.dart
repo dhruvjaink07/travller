@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travller/chat_screen.dart';
-import 'package:travller/itenary_screen.dart';
-import 'package:travller/theme/app_colors.dart'; // Import the AppColors class
+import 'package:travller/features/chat/screens/chat_screen.dart';
+import 'package:travller/features/itinerary/screens/itenary_screen.dart';
+import 'package:travller/app/theme/app_colors.dart'; // Import the AppColors class
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ItineraryScreen()),
+                          builder: (context) => const ItineraryScreen()),
                     );
                   },
                   icon: const Icon(Icons.map, color: AppColors.background),
@@ -73,7 +73,8 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const ChatScreen()),
                     );
                   },
                   icon: const Icon(Icons.chat, color: AppColors.background),

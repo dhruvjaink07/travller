@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:travller/itenary_service.dart';
-import 'package:travller/itenary_display_screen.dart';
-import 'package:travller/theme/app_colors.dart';
-import 'package:travller/location_suggestions.dart'; // Import the new file
+import 'package:travller/features/itinerary/screens/itenary_display_screen.dart';
+import 'package:travller/app/theme/app_colors.dart';
+import 'package:travller/features/location/services/location_suggestions.dart'; // Import the new file
 import 'package:intl/intl.dart';
-import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/itinerary_provider.dart';
 
-class ItineraryScreen extends StatefulWidget {
+class ItineraryScreen extends ConsumerStatefulWidget {
   const ItineraryScreen({super.key});
-
   @override
   _ItineraryScreenState createState() => _ItineraryScreenState();
 }
 
-class _ItineraryScreenState extends State<ItineraryScreen> {
+class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
+  final TextEditingController _sourceController = TextEditingController();
   final TextEditingController _destinationController = TextEditingController();
   final TextEditingController _interestsController = TextEditingController();
   final TextEditingController _peopleController = TextEditingController();
@@ -28,10 +28,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   String _selectedCurrency = "USD"; // Default currency
 
   final List<String> _currencies = [
+    "INR",
     "USD",
     "EUR",
     "GBP",
-    "INR",
     "JPY"
   ]; // Supported currencies
 
@@ -84,7 +84,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       _showErrorDialog("Please select both start and end dates.");
       return;
     }
-
     if (_peopleController.text.isEmpty ||
         int.tryParse(_peopleController.text) == null ||
         int.parse(_peopleController.text) <= 0) {
@@ -95,53 +94,43 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     final int duration = _endDate!.difference(_startDate!).inDays + 1;
     final int numberOfPeople = int.parse(_peopleController.text);
 
-    setState(() {
-      _isLoading = true;
-    });
+    final params = ItineraryParams(
+      source: _sourceController.text,
+      destination: _destinationController.text,
+      duration: duration.toString(),
+      interests: _interests.join(','),
+      numberOfPeople: numberOfPeople,
+      startDate: _startDate,
+      endDate: _endDate,
+      currency: _selectedCurrency,
+    );
 
-    try {
-      String response = await generateItinerary(
-        _destinationController.text,
-        duration.toString(),
-        _interests.join(','), // Pass the interests as a comma-separated string
-        numberOfPeople: numberOfPeople, // Pass the number of people
-        startDate: _startDate,
-        endDate: _endDate,
-        currency: _selectedCurrency, // Pass the selected currency
-      );
-
-      if (response.isEmpty) {
-        throw Exception("The API returned an empty response.");
-      }
-
-      response = response.replaceAll(RegExp(r'```json|```'), '');
-
-      try {
-        Map<String, dynamic> itineraryData = jsonDecode(response);
-
-        setState(() {
-          _isLoading = false;
-        });
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ItineraryDisplayScreen(itinerary: itineraryData),
-          ),
+    // Trigger the provider and listen for changes
+    ref.listen<AsyncValue<Map<String, dynamic>>>(
+      itineraryProvider(params),
+      (previous, next) {
+        next.when(
+          data: (itineraryData) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ItineraryDisplayScreen(itinerary: itineraryData),
+              ),
+            );
+          },
+          loading: () {
+            setState(() => _isLoading = true);
+          },
+          error: (e, st) {
+            setState(() => _isLoading = false);
+            _showErrorDialog("Failed to generate itinerary: $e");
+          },
         );
-      } catch (jsonError) {
-        rethrow;
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      },
+    );
 
-      final errorMsg = e.toString();
-      _showErrorDialog(
-          "Failed to generate itinerary: ${errorMsg.length > 100 ? '${errorMsg.substring(0, 100)}...' : errorMsg}");
-    }
+    setState(() => _isLoading = true);
   }
 
   void _showErrorDialog(String message) {
@@ -168,6 +157,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   void dispose() {
+    _sourceController.dispose();
     _locationSuggestions.dispose(); // Dispose of the suggestions logic
     _destinationController.dispose();
     _interestsController.dispose();
@@ -206,11 +196,23 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Destination",
+                                  "Source",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                TextField(
+                                  controller: _sourceController,
+                                  decoration: InputDecoration(
+                                    hintText: "Enter your source location",
+                                    prefixIcon: const Icon(Icons.location_on,
+                                        color: AppColors.primary),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 10),

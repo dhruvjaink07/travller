@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:travller/home_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travller/home/home_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
