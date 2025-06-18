@@ -3,7 +3,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 class ChatbotService {
   final model = GenerativeModel(
       model: 'gemini-2.0-flash',
-      apiKey: 'AIzaSyAvXRt6EbiUyYEwOk9adzLd8gES3WvyHSE');
+      apiKey: 'API_KEY');
 
   Future<String> getResponse(String userQuery,
       {double? latitude, double? longitude}) async {
