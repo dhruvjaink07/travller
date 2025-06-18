@@ -9,7 +9,7 @@ Future<String> generateItinerary(
     DateTime? endDate}) async {
   final model = GenerativeModel(
       model: 'gemini-2.0-flash',
-      apiKey: 'AIzaSyAvXRt6EbiUyYEwOk9adzLd8gES3WvyHSE');
+      apiKey: 'API_KEY');
 
   final actualStartDate = startDate ?? DateTime.now();
   final actualEndDate =
