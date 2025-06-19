@@ -8,6 +8,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width > 700;
+    final contentWidth = isWide ? 400.0 : double.infinity;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Traveller's Hub"),
@@ -15,84 +18,108 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Background Image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/travel-background.png"),
-                  fit: BoxFit.fitHeight),
+          // Optional: faint full-page background image
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.08, // Very subtle
+              child: Image.asset(
+                "assets/travel-background.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          // Content
+          // Main content
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Welcome to Traveller's Hub",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.background, // Use textPrimary color
-                    shadows: [
-                      Shadow(
-                        blurRadius: 10.0,
-                        color: AppColors.shadow, // Use shadow color
-                        offset: Offset(2.0, 2.0),
+            child: Container(
+              width: 420,
+              height: 600,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                image: const DecorationImage(
+                  image: AssetImage("assets/travel-background.png"),
+                  fit: BoxFit.cover,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: Colors.black.withOpacity(0.35),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Welcome to Traveller's Hub",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black54,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 50),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ItineraryScreen()),
-                    );
-                  },
-                  icon: const Icon(Icons.map, color: AppColors.background),
-                  label: const Text(
-                    "Itinerary Generator",
-                    style: TextStyle(fontSize: 18, color: AppColors.background),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors
-                        .buttonBackground, // Use buttonBackground color
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ChatScreen()),
-                    );
-                  },
-                  icon: const Icon(Icons.chat, color: AppColors.background),
-                  label: const Text(
-                    "Travel Assistant",
-                    style: TextStyle(fontSize: 18, color: AppColors.background),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors
-                        .buttonBackground, // Use buttonBackground color
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    const SizedBox(height: 50),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ItineraryScreen()),
+                        );
+                      },
+                      icon: const Icon(Icons.map, color: Colors.white),
+                      label: const Text(
+                        "Itinerary Generator",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.buttonBackground,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChatScreen()),
+                        );
+                      },
+                      icon: const Icon(Icons.chat, color: Colors.white),
+                      label: const Text(
+                        "Travel Assistant",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.buttonBackground,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:travller/features/itinerary/screens/itenary_display_screen.dart';
 import 'package:travller/app/theme/app_colors.dart';
-import 'package:travller/features/location/services/location_suggestions.dart'; // Import the new file
+import 'package:travller/features/itinerary/screens/itenary_display_screen.dart';
+import 'package:travller/features/itinerary/services/itenary_service.dart';
+import 'package:travller/features/location/services/location_suggestions.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/itinerary_provider.dart';
+import 'dart:convert';
 
-class ItineraryScreen extends ConsumerStatefulWidget {
+class ItineraryScreen extends StatefulWidget {
   const ItineraryScreen({super.key});
+
   @override
   _ItineraryScreenState createState() => _ItineraryScreenState();
 }
 
-class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
+class _ItineraryScreenState extends State<ItineraryScreen> {
   final TextEditingController _sourceController = TextEditingController();
+
   final TextEditingController _destinationController = TextEditingController();
   final TextEditingController _interestsController = TextEditingController();
   final TextEditingController _peopleController = TextEditingController();
@@ -28,10 +30,10 @@ class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
   String _selectedCurrency = "USD"; // Default currency
 
   final List<String> _currencies = [
-    "INR",
     "USD",
     "EUR",
     "GBP",
+    "INR",
     "JPY"
   ]; // Supported currencies
 
@@ -84,6 +86,7 @@ class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
       _showErrorDialog("Please select both start and end dates.");
       return;
     }
+
     if (_peopleController.text.isEmpty ||
         int.tryParse(_peopleController.text) == null ||
         int.parse(_peopleController.text) <= 0) {
@@ -94,43 +97,54 @@ class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
     final int duration = _endDate!.difference(_startDate!).inDays + 1;
     final int numberOfPeople = int.parse(_peopleController.text);
 
-    final params = ItineraryParams(
-      source: _sourceController.text,
-      destination: _destinationController.text,
-      duration: duration.toString(),
-      interests: _interests.join(','),
-      numberOfPeople: numberOfPeople,
-      startDate: _startDate,
-      endDate: _endDate,
-      currency: _selectedCurrency,
-    );
+    setState(() {
+      _isLoading = true;
+    });
 
-    // Trigger the provider and listen for changes
-    ref.listen<AsyncValue<Map<String, dynamic>>>(
-      itineraryProvider(params),
-      (previous, next) {
-        next.when(
-          data: (itineraryData) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ItineraryDisplayScreen(itinerary: itineraryData),
-              ),
-            );
-          },
-          loading: () {
-            setState(() => _isLoading = true);
-          },
-          error: (e, st) {
-            setState(() => _isLoading = false);
-            _showErrorDialog("Failed to generate itinerary: $e");
-          },
+    try {
+      String response = await generateItinerary(
+        _sourceController.text,
+        _destinationController.text,
+        duration.toString(),
+        _interests.join(','), // Pass the interests as a comma-separated string
+        numberOfPeople: numberOfPeople, // Pass the number of people
+        startDate: _startDate,
+        endDate: _endDate,
+        currency: _selectedCurrency, // Pass the selected currency
+      );
+
+      if (response.isEmpty) {
+        throw Exception("The API returned an empty response.");
+      }
+
+      response = response.replaceAll(RegExp(r'```json|```'), '');
+
+      try {
+        Map<String, dynamic> itineraryData = jsonDecode(response);
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ItineraryDisplayScreen(itinerary: itineraryData),
+          ),
         );
-      },
-    );
+      } catch (jsonError) {
+        rethrow;
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
 
-    setState(() => _isLoading = true);
+      final errorMsg = e.toString();
+      _showErrorDialog(
+          "Failed to generate itinerary: ${errorMsg.length > 100 ? '${errorMsg.substring(0, 100)}...' : errorMsg}");
+    }
   }
 
   void _showErrorDialog(String message) {
@@ -157,7 +171,6 @@ class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
 
   @override
   void dispose() {
-    _sourceController.dispose();
     _locationSuggestions.dispose(); // Dispose of the suggestions logic
     _destinationController.dispose();
     _interestsController.dispose();
@@ -213,6 +226,15 @@ class _ItineraryScreenState extends ConsumerState<ItineraryScreen> {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  "Destination",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
