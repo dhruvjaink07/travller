@@ -1,5 +1,6 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intl/intl.dart';
+import 'package:travller/config.dart';
 
 Future<String> generateItinerary(
     String source, String destination, String duration, String interests,
@@ -7,9 +8,8 @@ Future<String> generateItinerary(
     required String currency,
     DateTime? startDate,
     DateTime? endDate}) async {
-  final model = GenerativeModel(
-      model: 'gemini-2.0-flash',
-      apiKey: 'API_KEY');
+  const String APIKEY = Config.APIKEY;
+  final model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: APIKEY);
 
   final actualStartDate = startDate ?? DateTime.now();
   final actualEndDate =

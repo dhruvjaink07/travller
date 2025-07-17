@@ -1,9 +1,9 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:travller/config.dart';
 
 class ChatbotService {
-  final model = GenerativeModel(
-      model: 'gemini-2.0-flash',
-      apiKey: 'API_KEY');
+  static const String APIKEY = Config.APIKEY;
+  final model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: APIKEY);
 
   Future<String> getResponse(String userQuery,
       {double? latitude, double? longitude}) async {
