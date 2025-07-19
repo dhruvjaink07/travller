@@ -109,14 +109,46 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     fontSize: 16,
                     height: 1.4,
                   ),
+                  h1: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  h2: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  strong: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  em: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black87,
+                  ),
                   a: const TextStyle(
                     color: Colors.blue,
                     decoration: TextDecoration.underline,
                   ),
+                  listBullet: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                  ),
+                  code: TextStyle(
+                    backgroundColor: Colors.grey[300],
+                    fontFamily: 'monospace',
+                    color: Colors.black87,
+                  ),
+                  codeblockDecoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onTapLink: (text, href, title) {
                   if (href != null) {
-                    // You can use url_launcher to open links
+                    // Use url_launcher to open links
+                    // launch(href);
                   }
                 },
               ),

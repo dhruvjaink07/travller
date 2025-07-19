@@ -8,12 +8,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 700;
-    final contentWidth = isWide ? 400.0 : double.infinity;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Traveller's Hub"),
+        title: const Text(
+          "Traveller's Hub",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.primary, // Use primary color
       ),
       body: Stack(
